@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         // 仓库地址
-        FRONT_REPO = 'git@github.com:Romane24/block.git'
+        FRONT_REPO = 'https://github.com/Romane24/block.git'
         BACK_REPO  = 'git@github.com:Romane24/blockEndfinally.git'
         TEST_REPO  = 'git@github.com:Romane24/----UI.git'
 
