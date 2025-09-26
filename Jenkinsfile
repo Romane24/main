@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'NodeJS'  // 这里要跟您在 Jenkins 全局工具配置中设置的 Node.js 名称一致
+        nodejs 'NODEJS'
     }
     environment {
         // 仓库地址
@@ -12,9 +12,6 @@ pipeline {
         // 部署目录（同一台机器演示）
         FRONT_DIR = '/www/test-front'
         BACK_DIR  = '/www/test-back'
-
-        // Node 版本（Egg 需要 14+）
-        NODE_VERSION = '16'
     }
     stages {
         stage('Checkout-All') {
@@ -35,7 +32,8 @@ pipeline {
         stage('Build-Front') {
             steps {
                 dir('front') {
-                    sh "npm ci --registry=https://registry.npmmirror.com"
+                    // 使用 npm install 代替 npm ci
+                    sh "npm install --registry=https://registry.npmmirror.com"
                     sh "npm run build"
                 }
             }
@@ -52,19 +50,26 @@ pipeline {
         stage('Build-Back') {
             steps {
                 dir('back') {
-                    sh "npm ci --registry=https://registry.npmmirror.com"
-                    sh "npm run build"   // egg-bin build 或 tsc
+                    // 同样检查后端是否有 package-lock.json
+                    script {
+                        if (fileExists('package-lock.json')) {
+                            sh "npm ci --registry=https://registry.npmmirror.com"
+                        } else {
+                            sh "npm install --registry=https://registry.npmmirror.com"
+                        }
+                    }
+                    sh "npm run build"
                 }
             }
         }
         stage('Deploy-Back') {
             steps {
-                sh 'pkill -f "egg-server" || true'                       // 停旧服务
+                sh 'pkill -f "egg-server" || true'
                 sh "rm -rf ${BACK_DIR}/*"
-                sh "cp -r back/* ${BACK_DIR}/"                         // 整个项目拷过去
-                sh "cd ${BACK_DIR} && npm ci --production"             // 装生产依赖
-                sh "cd ${BACK_DIR} && nohup npm start > nohup.out 2>&1 &"  // 启动 Egg
-                sleep 8                                                // 等 Egg 初始化
+                sh "cp -r back/* ${BACK_DIR}/"
+                sh "cd ${BACK_DIR} && npm ci --production"
+                sh "cd ${BACK_DIR} && nohup npm start > nohup.out 2>&1 &"
+                sleep 8
             }
         }
 
