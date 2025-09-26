@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+        nodejs 'NodeJS'  // 这里要跟您在 Jenkins 全局工具配置中设置的 Node.js 名称一致
+    }
     environment {
         // 仓库地址
         FRONT_REPO = 'git@github.com:Romane24/block.git'
