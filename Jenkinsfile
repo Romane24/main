@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+    nodejs "nodejs" // 与全局配置中的名称一致
+    }
     
     stages {
         stage('Checkout Main Repo') {
