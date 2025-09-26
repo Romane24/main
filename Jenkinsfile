@@ -48,9 +48,9 @@ pipeline {
                             echo "=== 查找项目目录 ==="
                             find . -name "package.json" -type f
                             
-                            if [ -d "block/myBlock/react-vite-smyblock" ]; then
+                            if [ -d "myBlock/react-vite-smyblock" ]; then
                                 echo "✅ 找到项目目录"
-                                cd block/myBlock/react-vite-smyblock
+                                cd myBlock/react-vite-smyblock
                                 pwd
                                 ls -la
                             else
@@ -66,7 +66,7 @@ pipeline {
         stage('Build-Front') {
             steps {
                 script {
-                    dir('front/block/myBlock/react-vite-smyblock') {
+                    dir('front/myBlock/react-vite-smyblock') {
                         sh '''
                             echo "=== 开始构建前端 ==="
                             echo "当前目录:"
@@ -91,7 +91,7 @@ pipeline {
         stage('Deploy-Front') {
             steps {
                 script {
-                    dir('front/block/myBlock/react-vite-smyblock') {
+                    dir('front/myBlock/react-vite-smyblock') {
                         sh '''
                             echo "=== 部署前端 ==="
                             echo "部署静态资源到服务器..."
